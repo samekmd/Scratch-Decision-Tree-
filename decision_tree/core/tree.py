@@ -26,7 +26,7 @@ class DecisionTree(FitPrediction,  BaseEstimator, ClassifierMixin):
         
     Atributos: 
         - _splitter -> Instância da classe BestSplitter, que será utilizado para achar a melhor divisão dos dados 
-        - root -> Nó raiz da árvore
+        - _root -> Nó raiz da árvore
     """
     
     def __init__(self, 
@@ -42,7 +42,7 @@ class DecisionTree(FitPrediction,  BaseEstimator, ClassifierMixin):
         self.criterion = criterion 
         self.n_features = n_features
         self._splitter = BestSplitter(criterion=TREE_CLF_CRITERION[criterion])
-        self.root = None
+        self._root = None
     
     
     def fit(self, X, y):
@@ -56,7 +56,7 @@ class DecisionTree(FitPrediction,  BaseEstimator, ClassifierMixin):
         if self.n_features is not None and self.n_features > X.shape[1]:
             raise NumberOfFeaturesOutOfRange(f'A quantidade de features passada é maior que a presente no conjunto de dados')
         
-        self.root = self._grow_tree(X,y)
+        self._root = self._grow_tree(X,y)
         
     def _grow_tree(self, X,y, depth=0):
         """
@@ -132,7 +132,7 @@ class DecisionTree(FitPrediction,  BaseEstimator, ClassifierMixin):
             - Para cada amostra em X, percorre a árvore com base em seus atributos até chegar a um nó folha, 
               retornando a classe correspondente. 
         """
-        return np.array([self._walk_tree(sample,self.root) for sample in X])
+        return np.array([self._walk_tree(sample,self._root) for sample in X])
     
     def _walk_tree(self, x, node:Node):
         """
